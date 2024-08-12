@@ -18,7 +18,8 @@ const CreateForm = (props) => {
         id: nextId(),
         name: titleRef.current.value,
         description: descriptionRef.current.value,
-        dueDate: dateRef.current.value,
+        dueDate: new Date(dateRef.current.value),
+        tasks: [],
       })
     }
 
@@ -26,9 +27,9 @@ const CreateForm = (props) => {
   }
 
   return (<>
-      <form ref={formRef} onSubmit={handleSubmit} className="p-8">
-        <div className="create-header p-4 flex justify-end gap-2">
-          <Button onClick={() => props.onFormCancel('')} type={"reset"} additionalClasses={"bg-gray-100 text-gray-500 w-1/12 mx-0 mt-0 hover:bg-gray-300"} text={"Cancel"}/>
+      <form ref={formRef} onSubmit={handleSubmit}>
+        <div className="create-header flex justify-end gap-2">
+          <Button onClick={() => props.onFormCancel('')} type={"reset"} additionalClasses={"bg-gray-100 text-gray-800 w-auto mx-0 mt-0 hover:bg-gray-300"} text={"Cancel"}/>
           <Button type={"submit"}
                   additionalClasses={"bg-gray-800 text-gray-100 w-1/12 mx-0 mt-0 hover:bg-gray-900 hover:text-white"}
                   text={"Save"}/>
