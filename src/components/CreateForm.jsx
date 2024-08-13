@@ -1,9 +1,8 @@
-import nextId from "react-id-generator";
-
 import Button from "../ui/Button.jsx";
 import Input from "../ui/Input.jsx";
 
 import {useRef} from "react";
+import {getRandom} from "../utilities/functions.js";
 
 const CreateForm = (props) => {
   const titleRef = useRef(null);
@@ -15,7 +14,7 @@ const CreateForm = (props) => {
     e.preventDefault();
     if (titleRef.current.value && descriptionRef.current.value && dateRef.current.value) {
       props.onFormSubmit({
-        id: nextId(),
+        id: getRandom(),
         name: titleRef.current.value,
         description: descriptionRef.current.value,
         dueDate: new Date(dateRef.current.value),

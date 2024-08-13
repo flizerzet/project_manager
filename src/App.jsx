@@ -1,29 +1,18 @@
-import nextId from 'react-id-generator';
-
 import Sidebar from "./components/Sidebar.jsx";
 import Main from "./components/Main.jsx";
 import CreateForm from "./components/CreateForm.jsx";
 import ProjectPage from "./components/ProjectPage.jsx";
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Wrapper from "./ui/Wrapper.jsx";
 
 function App() {
   const [visibleContent, setVisibleContent] = useState('');
+  const [projectsList, setProjectsList] = useState(JSON.parse(window.localStorage.getItem("projects")) ?? [])
 
-  const [projectsList, setProjectsList] = useState([{
-    id: nextId(),
-    name: 'Test',
-    description: " look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and",
-    dueDate: new Date(),
-    tasks: ["Task 1Task 1Task 1Task 1Task 1Task 1Task 1TaskTask 1Task 1Task 1Task 1Task 1Task 1Task 1TaskTask 1Task 1Task 1Task 1Task 1Task 1Task 1TaskTask 1Task 1Task 1Task 1Task 1Task 1Task 1TaskTask 1Task 1Task 1Task 1Task 1Task 1Task 1Task 1", "Task 2", "Task 3", "Task 4"],
-  }, {
-    id: nextId(),
-    name: 'Test2',
-    description: "ou are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a ha",
-    dueDate: new Date(),
-    tasks: ["Task 1", "Task 2", "Task 3"],
-  }]);
+  useEffect(() => {
+    window.localStorage.setItem("projects", JSON.stringify(projectsList));
+  }, [projectsList]);
 
   const addNewProject = (project) => {
     setProjectsList(PL => ([
@@ -31,11 +20,24 @@ function App() {
         project
       ]
     ))
+
+  }
+
+  const removeProject = (id) => {
+    setProjectsList(projectsList.filter(project => project.id !== id));
   }
 
   const addNewTask = (projectId, task) => {
     const currentTask = projectsList.find((project) => project.id === projectId);
     currentTask.tasks.push(task);
+    setProjectsList(list => (
+      [...list]
+    ));
+  }
+
+  const removeTask = (projectId, taskId) => {
+    const currentTask = projectsList.find((project) => project.id === projectId);
+    currentTask.tasks = currentTask.tasks.filter((projectTask) => projectTask.id !== taskId);
     setProjectsList(list => (
       [...list]
     ));
@@ -53,7 +55,7 @@ function App() {
         <Main onClickBtn={setContentToShow}/> :
         (visibleContent === 'create' ?
             <CreateForm onFormSubmit={addNewProject} onFormCancel={setContentToShow}/> :
-            <ProjectPage onAddTask={addNewTask} project={projectsList.find(elem => elem.id === visibleContent)}/>
+            <ProjectPage onRemoveProject={{removeProject, setContentToShow}} onRemoveTask={removeTask} onAddTask={addNewTask} project={projectsList.find(elem => elem.id === visibleContent)}/>
         )
       }
     </Wrapper>
